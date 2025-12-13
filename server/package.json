@@ -11,7 +11,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "migrate": "ts-node src/db/migrate.ts"
+    "migrate": "ts-node src/db/migrate.ts",
+    "seed": "ts-node src/db/seed.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -23,9 +24,11 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/helmet": "^0.0.48",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.0.1",
     "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",
