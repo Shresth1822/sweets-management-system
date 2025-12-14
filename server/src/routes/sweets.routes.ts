@@ -19,6 +19,49 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/sweets/search
+router.get("/search", async (req: Request, res: Response) => {
+  const { name, category, minPrice, maxPrice } = req.query;
+
+  let queryText = "SELECT * FROM sweets WHERE 1=1";
+  const queryParams: any[] = [];
+  let paramCount = 1;
+
+  if (name) {
+    queryText += ` AND name ILIKE $${paramCount}`;
+    queryParams.push(`%${name}%`);
+    paramCount++;
+  }
+
+  if (category) {
+    queryText += ` AND category ILIKE $${paramCount}`;
+    queryParams.push(`%${category}%`);
+    paramCount++;
+  }
+
+  if (minPrice) {
+    queryText += ` AND price >= $${paramCount}`;
+    queryParams.push(minPrice);
+    paramCount++;
+  }
+
+  if (maxPrice) {
+    queryText += ` AND price <= $${paramCount}`;
+    queryParams.push(maxPrice);
+    paramCount++;
+  }
+
+  queryText += " ORDER BY name ASC";
+
+  try {
+    const result = await query(queryText, queryParams);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error searching sweets:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // POST /api/sweets - Protected
 router.post("/", authenticateToken, async (req: AuthRequest, res: Response) => {
   const { name, category, price, quantity } = req.body;
