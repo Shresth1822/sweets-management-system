@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import sweetsRouter from "./routes/sweets.routes";
+import authRouter from "./routes/auth.routes";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(helmet());
 
 app.use("/api/sweets", sweetsRouter);
+app.use("/api/auth", authRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Sweets Management API is running");
