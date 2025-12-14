@@ -1,5 +1,10 @@
 import { Router, Request, Response } from "express";
 import { query } from "../db/index";
+import {
+  authenticateToken,
+  requireAdmin,
+  AuthRequest,
+} from "../middleware/auth.middleware";
 
 const router = Router();
 
@@ -14,8 +19,8 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/sweets
-router.post("/", async (req: Request, res: Response) => {
+// POST /api/sweets - Protected
+router.post("/", authenticateToken, async (req: AuthRequest, res: Response) => {
   const { name, category, price, quantity } = req.body;
   try {
     const result = await query(
@@ -29,34 +34,44 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// PUT /api/sweets/:id
-router.put("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { name, category, price, quantity } = req.body;
-  try {
-    const result = await query(
-      "UPDATE sweets SET name = $1, category = $2, price = $3, quantity = $4, updated_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *",
-      [name, category, price, quantity, id]
-    );
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.error("Error updating sweet:", err);
-    res.status(500).json({ error: "Internal server error" });
+// PUT /api/sweets/:id - Protected
+router.put(
+  "/:id",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    const { id } = req.params;
+    const { name, category, price, quantity } = req.body;
+    try {
+      const result = await query(
+        "UPDATE sweets SET name = $1, category = $2, price = $3, quantity = $4, updated_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *",
+        [name, category, price, quantity, id]
+      );
+      res.status(200).json(result.rows[0]);
+    } catch (err) {
+      console.error("Error updating sweet:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
-// DELETE /api/sweets/:id
-router.delete("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const result = await query("DELETE FROM sweets WHERE id = $1 RETURNING *", [
-      id,
-    ]);
-    res.status(200).json({ message: "Sweet deleted successfully" });
-  } catch (err) {
-    console.error("Error deleting sweet:", err);
-    res.status(500).json({ error: "Internal server error" });
+// DELETE /api/sweets/:id - Admin Only
+router.delete(
+  "/:id",
+  authenticateToken,
+  requireAdmin,
+  async (req: AuthRequest, res: Response) => {
+    const { id } = req.params;
+    try {
+      const result = await query(
+        "DELETE FROM sweets WHERE id = $1 RETURNING *",
+        [id]
+      );
+      res.status(200).json({ message: "Sweet deleted successfully" });
+    } catch (err) {
+      console.error("Error deleting sweet:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
 export default router;
