@@ -26,7 +26,7 @@ router.post(
 
       // 1. Check current stock
       const sweetResult = await query(
-        "SELECT quantity, name FROM sweets WHERE id = $1 FOR UPDATE",
+        "SELECT quantity, name, price FROM sweets WHERE id = $1 FOR UPDATE",
         [id]
       );
 
@@ -52,6 +52,17 @@ router.post(
         [qty, id]
       );
 
+      const sweetPrice = sweetResult.rows[0].price;
+      const totalPrice = sweetPrice * qty;
+      const userId = req.user?.id;
+
+      if (userId) {
+        await query(
+          "INSERT INTO transactions (user_id, sweet_id, quantity, total_price) VALUES ($1, $2, $3, $4)",
+          [userId, id, qty, totalPrice]
+        );
+      }
+
       await query("COMMIT");
       res
         .status(200)
@@ -59,6 +70,36 @@ router.post(
     } catch (err) {
       await query("ROLLBACK");
       console.error("Purchase error:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+// GET /api/inventory/stats - Protected
+router.get(
+  "/stats",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      const role = req.user?.role;
+
+      if (role === "ADMIN") {
+        const result = await query(
+          "SELECT SUM(total_price) as total FROM transactions"
+        );
+        const totalRevenue = result.rows[0].total || 0;
+        res.status(200).json({ type: "revenue", value: Number(totalRevenue) });
+      } else {
+        const result = await query(
+          "SELECT SUM(total_price) as total FROM transactions WHERE user_id = $1",
+          [userId]
+        );
+        const totalSpent = result.rows[0].total || 0;
+        res.status(200).json({ type: "spent", value: Number(totalSpent) });
+      }
+    } catch (err) {
+      console.error("Stats error:", err);
       res.status(500).json({ error: "Internal server error" });
     }
   }

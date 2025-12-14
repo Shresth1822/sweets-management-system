@@ -18,6 +18,8 @@ export const createSweetSchema = z.object({
   category: z.string().min(1),
   price: z.number().positive(),
   quantity: z.number().int().nonnegative(),
+  description: z.string().optional(),
+  image_url: z.string().url().optional(),
 });
 
 export const updateSweetSchema = createSweetSchema.partial();

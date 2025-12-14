@@ -8,6 +8,8 @@ export interface Sweet {
   id: string;
   name: string;
   category: string;
-  price: number; // Stored as string or number in DB? Driver returns string if DECIMAL, but we cast
+  price: number;
   quantity: number;
+  description?: string;
+  image_url?: string;
 }

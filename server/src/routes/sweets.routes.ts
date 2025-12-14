@@ -78,11 +78,12 @@ router.post(
   authenticateToken,
   validate(createSweetSchema),
   async (req: AuthRequest, res: Response) => {
-    const { name, category, price, quantity } = req.body;
+    const { name, category, price, quantity, description, image_url } =
+      req.body;
     try {
       const result = await query(
-        "INSERT INTO sweets (name, category, price, quantity) VALUES ($1, $2, $3, $4) RETURNING *",
-        [name, category, price, quantity]
+        "INSERT INTO sweets (name, category, price, quantity, description, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+        [name, category, price, quantity, description, image_url]
       );
       res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -99,11 +100,12 @@ router.put(
   validate(updateSweetSchema),
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
-    const { name, category, price, quantity } = req.body;
+    const { name, category, price, quantity, description, image_url } =
+      req.body;
     try {
       const result = await query(
-        "UPDATE sweets SET name = COALESCE($1, name), category = COALESCE($2, category), price = COALESCE($3, price), quantity = COALESCE($4, quantity), updated_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *",
-        [name, category, price, quantity, id]
+        "UPDATE sweets SET name = COALESCE($1, name), category = COALESCE($2, category), price = COALESCE($3, price), quantity = COALESCE($4, quantity), description = COALESCE($5, description), image_url = COALESCE($6, image_url), updated_at = CURRENT_TIMESTAMP WHERE id = $7 RETURNING *",
+        [name, category, price, quantity, description, image_url, id]
       );
       res.status(200).json(result.rows[0]);
     } catch (err) {

@@ -34,56 +34,78 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="flex justify-center">
-          <Candy className="h-12 w-12 text-indigo-600" />
-        </div>
-        <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">
-              {error}
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-red-400 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10">
+          <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6 text-center">
+            <div className="mx-auto h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+              <Candy className="h-8 w-8 text-purple-600" />
             </div>
-          )}
+            <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900">
+              Welcome Back!
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Sign in to your SweetSpace account
+            </p>
+          </div>
 
-          <Input
-            label="Email address"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-          />
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg">
+                {error}
+              </div>
+            )}
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
+            <Input
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
 
-          <Button type="submit" className="w-full" isLoading={isLoading}>
-            Sign in
-          </Button>
-        </form>
+            <Input
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
 
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Not a member?{" "}
-          <Link
-            to="/register"
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >
-            Register now
-          </Link>
-        </p>
+            <div>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-lg"
+                isLoading={isLoading}
+              >
+                Sign In
+              </Button>
+            </div>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">
+                  Don't have an account?
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <Link to="/register">
+                <Button variant="secondary" className="w-full">
+                  Create Account
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

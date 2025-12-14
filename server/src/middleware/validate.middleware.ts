@@ -8,12 +8,16 @@ export const validate =
       if (source === "body") {
         req.body = schema.parse(req.body);
       } else if (source === "query") {
-        req.query = schema.parse(req.query) as any;
+        const parsed = schema.parse(req.query);
+        // req.query is a getter/read-only in some environments, so we mutate the object
+        Object.assign(req.query as object, parsed);
       } else if (source === "params") {
         req.params = schema.parse(req.params) as any;
       }
       next();
     } catch (error) {
+      console.error("Validation Error:", error);
+
       if (error instanceof ZodError) {
         res.status(400).json({
           error: "Validation failed",

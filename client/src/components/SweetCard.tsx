@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { ShoppingCart, Package } from "lucide-react";
+import { ShoppingCart, Package, Plus, Minus } from "lucide-react";
 import type { Sweet } from "../types";
 import { Button } from "./ui/Button";
-import { Input } from "./ui/Input";
 import api from "../utils/api";
 
 interface SweetCardProps {
@@ -22,7 +21,7 @@ export const SweetCard: React.FC<SweetCardProps> = ({ sweet, onPurchase }) => {
       await api.post(`/inventory/${sweet.id}/purchase`, {
         quantityToBuy: Number(quantityToBuy),
       });
-      onPurchase(); // Refresh data
+      onPurchase();
       setQuantityToBuy(1);
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to purchase");
@@ -33,57 +32,88 @@ export const SweetCard: React.FC<SweetCardProps> = ({ sweet, onPurchase }) => {
 
   const isOutOfStock = sweet.quantity === 0;
 
-  return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow">
-      <div className="p-6 flex-1">
-        <div className="flex justify-between items-start">
-          <div>
-            <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 mb-2">
-              {sweet.category}
-            </span>
-            <h3 className="text-xl font-bold text-gray-900">{sweet.name}</h3>
-          </div>
-          <div className="text-lg font-semibold text-gray-900">
-            ${Number(sweet.price).toFixed(2)}
-          </div>
-        </div>
+  const increment = () =>
+    setQuantityToBuy((prev) => Math.min(prev + 1, sweet.quantity));
+  const decrement = () => setQuantityToBuy((prev) => Math.max(prev - 1, 1));
 
-        <div className="mt-4 flex items-center text-sm text-gray-500">
-          <Package
-            className={`w-4 h-4 mr-1 ${
-              isOutOfStock ? "text-red-500" : "text-gray-400"
-            }`}
+  return (
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full group">
+      {/* Image Area */}
+      <div className="relative h-48 overflow-hidden bg-gray-100">
+        {sweet.image_url ? (
+          <img
+            src={sweet.image_url}
+            alt={sweet.name}
+            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
           />
-          <span className={isOutOfStock ? "text-red-600 font-medium" : ""}>
-            {isOutOfStock ? "Out of Stock" : `${sweet.quantity} available`}
-          </span>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-purple-50">
+            <Package className="w-12 h-12 text-purple-300" />
+          </div>
+        )}
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-semibold text-purple-700 shadow-sm">
+          {sweet.category}
         </div>
       </div>
 
-      <div className="p-6 bg-gray-50 border-t border-gray-100 mt-auto">
-        {error && <p className="text-xs text-red-600 mb-2">{error}</p>}
-        <div className="flex gap-2 items-center">
-          <div className="w-20">
-            <Input
-              type="number"
-              min="1"
-              max={sweet.quantity}
-              value={quantityToBuy}
-              onChange={(e) => setQuantityToBuy(Number(e.target.value))}
-              disabled={isOutOfStock}
-              className="h-9"
-            />
+      <div className="p-5 flex-1 flex flex-col">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+            {sweet.name}
+          </h3>
+          <span className="text-lg font-bold text-purple-600">
+            ₹{Number(sweet.price).toFixed(2)}
+          </span>
+        </div>
+
+        <p className="text-sm text-gray-500 mb-4 line-clamp-2 min-h-[2.5rem]">
+          {sweet.description || "No description available."}
+        </p>
+
+        <div className="mt-auto space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span
+              className={`font-medium ${
+                isOutOfStock ? "text-red-500" : "text-green-600"
+              }`}
+            >
+              {isOutOfStock ? "Out of Stock" : `${sweet.quantity} in stock`}
+            </span>
           </div>
-          <Button
-            className="flex-1"
-            size="sm"
-            onClick={handlePurchase}
-            disabled={isOutOfStock || isLoading || quantityToBuy < 1}
-            isLoading={isLoading}
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Buy Now
-          </Button>
+
+          {error && <p className="text-xs text-red-500">{error}</p>}
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shrink-0">
+              <button
+                onClick={decrement}
+                disabled={isOutOfStock || quantityToBuy <= 1}
+                className="p-2 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              >
+                <Minus className="w-3 h-3 text-gray-600" />
+              </button>
+              <span className="w-8 text-center text-sm font-medium text-gray-900">
+                {quantityToBuy}
+              </span>
+              <button
+                onClick={increment}
+                disabled={isOutOfStock || quantityToBuy >= sweet.quantity}
+                className="p-2 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              >
+                <Plus className="w-3 h-3 text-gray-600" />
+              </button>
+            </div>
+
+            <Button
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-md border-0"
+              onClick={handlePurchase}
+              disabled={isOutOfStock || isLoading}
+              isLoading={isLoading}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Cart
+            </Button>
+          </div>
         </div>
       </div>
     </div>
