@@ -5,6 +5,8 @@ import {
   requireAdmin,
   AuthRequest,
 } from "../middleware/auth.middleware";
+import { validate } from "../middleware/validate.middleware";
+import { purchaseSchema, restockSchema } from "../utils/schemas";
 
 const router = Router();
 
@@ -13,15 +15,11 @@ const router = Router();
 router.post(
   "/:id/purchase",
   authenticateToken,
+  validate(purchaseSchema),
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
     const { quantityToBuy } = req.body; // Expecting { quantityToBuy: number }
     const qty = quantityToBuy || 1; // Default to 1 if not specified
-
-    if (qty <= 0) {
-      res.status(400).json({ error: "Quantity must be positive" });
-      return;
-    }
 
     try {
       await query("BEGIN");
@@ -71,14 +69,10 @@ router.post(
   "/:id/restock",
   authenticateToken,
   requireAdmin,
+  validate(restockSchema),
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
     const { quantityToAdd } = req.body;
-
-    if (!quantityToAdd || quantityToAdd <= 0) {
-      res.status(400).json({ error: "Positive quantityToAdd is required" });
-      return;
-    }
 
     try {
       const result = await query(
