@@ -1,4 +1,4 @@
-﻿# sweets-management-system(In Progress)
+﻿# sweets-management-system
 
 ## steps to push data on github
 
@@ -21,4 +21,3 @@ To install - Postman, pgAdmin, postgres
 - npm run migrate
 - npm run seed
   Admin user created (admin@sweets.com / admin123)
-
