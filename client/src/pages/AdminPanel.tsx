@@ -15,12 +15,21 @@ export const AdminPanel: React.FC = () => {
   const [isEditing, setIsEditing] = useState<Sweet | null>(null);
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
-  // Modal State for Restock
+  const predefinedCategories = [
+    "Milk Solids",
+    "Cashew",
+    "Flour",
+    "Fudge",
+    "Candy",
+  ];
+
+  // Rest of state...
   const [restockId, setRestockId] = useState<string | null>(null);
   const [restockAmount, setRestockAmount] = useState("");
 
@@ -43,6 +52,7 @@ export const AdminPanel: React.FC = () => {
   const resetForm = () => {
     setName("");
     setCategory("");
+    setIsCustomCategory(false);
     setPrice("");
     setQuantity("");
     setDescription("");
@@ -56,7 +66,15 @@ export const AdminPanel: React.FC = () => {
   const handleEditClick = (sweet: Sweet) => {
     setIsEditing(sweet);
     setName(sweet.name);
-    setCategory(sweet.category);
+
+    if (predefinedCategories.includes(sweet.category)) {
+      setCategory(sweet.category);
+      setIsCustomCategory(false);
+    } else {
+      setCategory(sweet.category);
+      setIsCustomCategory(true);
+    }
+
     setPrice(sweet.price.toString());
     setQuantity(sweet.quantity.toString());
     setDescription(sweet.description || "");
@@ -121,6 +139,7 @@ export const AdminPanel: React.FC = () => {
     }
   };
 
+  // ... return logic ...
   return (
     <div className="space-y-8 pb-12">
       <div className="flex justify-between items-center">
@@ -162,21 +181,57 @@ export const AdminPanel: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Category
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full h-10 rounded-md border border-gray-300 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                required
-              >
-                <option value="" disabled>
-                  Select Category
-                </option>
-                <option value="Milk Solids">Milk Solids</option>
-                <option value="Cashew">Cashew</option>
-                <option value="Flour">Flour</option>
-                <option value="Fudge">Fudge</option>
-                <option value="Candy">Candy</option>
-              </select>
+              {isCustomCategory ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    placeholder="Enter new category"
+                    required
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsCustomCategory(false);
+                      setCategory("");
+                    }}
+                    title="Select existing category"
+                  >
+                    x
+                  </Button>
+                </div>
+              ) : (
+                <select
+                  value={category}
+                  onChange={(e) => {
+                    if (e.target.value === "NEW_CATEGORY_OPTION") {
+                      setIsCustomCategory(true);
+                      setCategory("");
+                    } else {
+                      setCategory(e.target.value);
+                    }
+                  }}
+                  className="w-full h-10 rounded-md border border-gray-300 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  required
+                >
+                  <option value="" disabled>
+                    Select Category
+                  </option>
+                  {predefinedCategories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                  <option
+                    value="NEW_CATEGORY_OPTION"
+                    className="font-bold text-purple-600"
+                  >
+                    + Add New Category
+                  </option>
+                </select>
+              )}
             </div>
           </div>
 

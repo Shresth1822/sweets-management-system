@@ -26,16 +26,28 @@ export const Layout: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative overflow-hidden">
+      {/* Background Mesh Gradient */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary-400/20 blur-[100px] animate-float"></div>
+        <div
+          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-400/20 blur-[100px] animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+      </div>
+
       {/* Navbar */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
+      <nav className="glass sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                <Candy className="h-8 w-8 text-indigo-600" />
-                <span className="font-bold text-xl text-gray-900">
+              <Link
+                to="/"
+                className="flex-shrink-0 flex items-center gap-2 group"
+              >
+                <Candy className="h-8 w-8 text-primary-600 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="font-bold text-2xl text-gradient">
                   SweetSpace
                 </span>
               </Link>
@@ -47,26 +59,34 @@ export const Layout: React.FC = () => {
                 <>
                   <Link
                     to="/"
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
                       isActive("/")
-                        ? "border-indigo-500 text-gray-900"
-                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                        ? "border-primary-500 text-gray-900"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-primary-600"
                     }`}
                   >
-                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    <LayoutDashboard
+                      className={`w-4 h-4 mr-2 ${
+                        isActive("/") ? "text-primary-500" : ""
+                      }`}
+                    />
                     Dashboard
                   </Link>
 
                   {user.role === "ADMIN" && (
                     <Link
                       to="/admin"
-                      className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                      className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
                         isActive("/admin")
-                          ? "border-indigo-500 text-gray-900"
-                          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                          ? "border-primary-500 text-gray-900"
+                          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-primary-600"
                       }`}
                     >
-                      <PlusCircle className="w-4 h-4 mr-2" />
+                      <PlusCircle
+                        className={`w-4 h-4 mr-2 ${
+                          isActive("/admin") ? "text-primary-500" : ""
+                        }`}
+                      />
                       Admin
                     </Link>
                   )}

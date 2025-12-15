@@ -37,7 +37,7 @@ export const SweetCard: React.FC<SweetCardProps> = ({ sweet, onPurchase }) => {
   const decrement = () => setQuantityToBuy((prev) => Math.max(prev - 1, 1));
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full group">
+    <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full group transform hover:-translate-y-1 transition-all duration-300">
       {/* Image Area */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
         {sweet.image_url ? (
@@ -61,7 +61,7 @@ export const SweetCard: React.FC<SweetCardProps> = ({ sweet, onPurchase }) => {
           <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
             {sweet.name}
           </h3>
-          <span className="text-lg font-bold text-purple-600">
+          <span className="text-lg font-bold text-primary-600">
             ₹{Number(sweet.price).toFixed(2)}
           </span>
         </div>
@@ -105,7 +105,7 @@ export const SweetCard: React.FC<SweetCardProps> = ({ sweet, onPurchase }) => {
             </div>
 
             <Button
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-md border-0"
+              className="flex-1 btn-primary border-0"
               onClick={handlePurchase}
               disabled={isOutOfStock || isLoading}
               isLoading={isLoading}

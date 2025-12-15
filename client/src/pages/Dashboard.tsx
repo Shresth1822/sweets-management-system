@@ -71,39 +71,39 @@ export const Dashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="glass-card p-6 rounded-2xl flex items-center justify-between group">
           <div>
             <p className="text-sm font-medium text-gray-500">Total Items</p>
             <h3 className="text-2xl font-bold text-gray-900 mt-1">
               {totalItems}
             </h3>
           </div>
-          <div className="p-3 bg-green-50 rounded-lg">
+          <div className="p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
             <ShoppingBag className="w-6 h-6 text-green-600" />
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="glass-card p-6 rounded-2xl flex items-center justify-between group">
           <div>
             <p className="text-sm font-medium text-gray-500">Total Stock</p>
             <h3 className="text-2xl font-bold text-gray-900 mt-1">
               {totalStock}
             </h3>
           </div>
-          <div className="p-3 bg-blue-50 rounded-lg">
+          <div className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
             <Package className="w-6 h-6 text-blue-600" />
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="glass-card p-6 rounded-2xl flex items-center justify-between group border-l-4 border-primary-500">
           <div>
             <p className="text-sm font-medium text-gray-500">
               {stats?.type === "revenue" ? "Total Revenue" : "Total Spent"}
             </p>
-            <h3 className="text-2xl font-bold text-gray-900 mt-1">
+            <h3 className="text-2xl font-bold text-gradient mt-1">
               ₹{(stats?.value || 0).toLocaleString("en-IN")}
             </h3>
           </div>
-          <div className="p-3 bg-purple-50 rounded-lg">
-            <Banknote className="w-6 h-6 text-purple-600" />
+          <div className="p-3 bg-gradient-to-br from-primary-50 to-secondary-50 rounded-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
+            <Banknote className="w-6 h-6 text-primary-600" />
           </div>
         </div>
       </div>
@@ -117,8 +117,7 @@ export const Dashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* Filter Section */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div className="glass-card p-6 rounded-2xl">
         <form onSubmit={handleSearch} className="space-y-6">
           <div className="flex gap-4">
             <div className="relative flex-1">
@@ -126,7 +125,7 @@ export const Dashboard: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search sweets by name..."
-                className="w-full pl-10 h-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                className="w-full pl-10 h-10 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all bg-white/50 backdrop-blur-sm"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -179,6 +178,11 @@ export const Dashboard: React.FC = () => {
                     onChange={(e) => setMaxPrice(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="md:col-span-3 flex justify-end">
+                <Button type="submit" className="btn-primary">
+                  Apply Filters
+                </Button>
               </div>
             </div>
           )}
