@@ -134,7 +134,7 @@ Includes tests for:
 - ✅ Sweets CRUD & Search
 - ✅ Inventory & Purchasing
 
-## ☁️ Deployment (Vercel)
+## ☁️ Deployment (Vercel)**[In Progress]**
 
 This project is configured for Vercel deployment with a Serverless Backend.
 
@@ -144,3 +144,4 @@ This project is configured for Vercel deployment with a Serverless Backend.
 4.  Deploy!
 
 _Note: For Vercel, use a cloud database like Neon.tech or Supabase._
+
